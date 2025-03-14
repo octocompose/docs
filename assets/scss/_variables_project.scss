@@ -1,0 +1,30 @@
+body.docs {
+    .navbar-expand, .td-navbar {
+        flex-wrap: wrap !important;
+        padding-top: 0;
+
+
+        .notification {
+            color: #000000;
+            background-color: var(--bs-yellow);
+            width: 100%;
+            height: 2.5rem;
+            padding: 0 5px 5px 5px;
+            font-size: 12px;
+        }
+
+        .nav {
+            padding-top: 5px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        main {
+            padding-top: 6rem !important;
+        }
+
+        aside {
+            padding-top: 6rem !important;
+        }
+    }
+}
