@@ -27,17 +27,16 @@ It helps you deploy, manage, and monitor multiple software services as a unified
 
 {{% blocks/section color="dark" type="row" %}}
 {{% blocks/feature icon="fa-warning" title="In concept phase" %}}
-OctoCompose is in CONCEPT phase! Everything here isn't made yet.
+The documentation describes planned functionality that is still under development.
 {{% /blocks/feature %}}
 
 
-
-{{% blocks/feature icon="fab fa-github" title="Contributions welcome!" url="https://github.com/octoctl/octoctl" %}}
-We do a [Pull Request](https://github.com/octoctl/octoctl/pulls) contributions workflow on **GitHub**. New users are always welcome!
+{{% blocks/feature icon="fab fa-github" title="Contributions welcome!" url="https://github.com/octcompose/octcompose" %}}
+We do a [Pull Request](https://github.com/octcompose/octcompose/pulls) contributions workflow on **GitHub**. New users are always welcome!
 {{% /blocks/feature %}}
 
 
-{{% blocks/feature icon="fab fa-matrix-org" title="Follow us on Matrix!" url="https://matrix.to/#/#go-orb:jochum.dev" %}}
+{{% blocks/feature icon="fa fa-matrix-org" title="Follow us on Matrix!" url="https://matrix.to/#/#go-orb:jochum.dev" %}}
 For announcement of latest features etc.
 {{% /blocks/feature %}}
 

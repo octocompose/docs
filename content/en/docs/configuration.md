@@ -23,7 +23,7 @@ This approach eliminates duplicate settings and separates core settings from cus
 ## Example `core` config
 
 Here is an example config which you might host at:
-`https://raw.githubusercontent.com/yourproject/octoctl-chart/refs/tags/v2.0.0/config/core.yaml`
+`https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml`
 
 ```yaml
 # Globals are applied to each service, individual services can overwrite them.
@@ -252,7 +252,7 @@ OctoCompose can track versions of configuration sources, enabling automated vers
 
 ```yaml
 include:
-  - url: https://raw.githubusercontent.com/yourproject/octoctl-chart/refs/tags/v2.0.0/config/core.yaml?template=true
+  - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml?template=true
     versions: github
 ```
 

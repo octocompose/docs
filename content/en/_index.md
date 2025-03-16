@@ -23,7 +23,7 @@ It helps you deploy, manage, and monitor multiple software services as a unified
 
 {{% blocks/section color="dark" type="row" %}}
 {{% blocks/feature icon="fa-warning" title="In concept phase" %}}
-OctoCompose is in CONCEPT phase! Everything here isn't made yet.
+The documentation describes planned functionality that is still under development.
 {{% /blocks/feature %}}
 
 

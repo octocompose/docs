@@ -21,4 +21,4 @@ Unlike traditional orchestration tools that lock you into a specific environment
 
 ## Project Status
 
-OctoCompose is currently in concept phase. The core architecture and plugin system are being designed, with initial implementations focused on the baremetal operator.
+OctoCompose is currently in the concept phase. The core architecture and plugin system are being designed, with initial implementations focused on the baremetal operator.
