@@ -1,5 +1,5 @@
 ---
-title: The name OctoCompose and Logo
+title: The name and Logo
 linkTitle: Name and Logo
 weight: 1
 description: >

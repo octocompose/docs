@@ -6,7 +6,7 @@ description: >
   Plugin system and available plugins.
 ---
 
-OctoCompose uses a plugin-based architecture that keeps the core system lightweight while allowing for extensive functionality through plugins. This modular approach makes OctoCompose extensible, maintainable, and adaptable to different use cases.
+OctoCompose uses a plugin-based architecture that keeps the core system lightweight while allowing for extensive functionality through plugins.
 
 ## Plugin System
 
@@ -24,35 +24,37 @@ Plugins are specified in the OctoCompose configuration and are automatically dow
 
 ### Plugin Configuration
 
-Plugins are configured in the operator section of the OctoCompose configuration:
+Plugins are configured in the operator section of the configuration:
 
 ```yaml
 operator:
   repos:
     core:
-      url: https://raw.githubusercontent.com/octocompose/plugins/main/repos/core.yaml
+      url: https://github.com/octocompose/plugins/releases/download/v0.0.1/repos/core.yaml
   
   services:
     my-service:
-      preflightCheck:
+      preflight:
         - tool: check-tcp
-          port: 8080
+          args:
+            port: 8080
         - tool: check-grpc
-          url: grpc://localhost:9000
-          endpoint: /health.V1alpha.Health/HealthZ
+          args:
+            url: grpc://localhost:9000
+            endpoint: /health.V1alpha.Health/HealthZ
 ```
 
 ### Plugin Repositories
 
-Plugins are distributed through repositories. The default repository is provided by the OctoCompose project, but you can specify custom repositories:
+Plugins are distributed through repositories. The default repository is provided by the project, but you can specify custom repositories:
 
 ```yaml
 operator:
   repos:
     core:
-      url: https://raw.githubusercontent.com/octocompose/plugins/main/repos/core.yaml
+      url: https://github.com/octocompose/plugins/releases/download/v0.0.1/repos/core.yaml
     custom:
-      url: https://example.com/octoctl-plugins/repo.yaml
+      url: https://github.com/yourproject/plugins/releases/download/v2.0.0/repos/custom.yaml
 ```
 
 ### Plugin Execution Flow
@@ -67,7 +69,7 @@ When OctoCompose needs to use a plugin:
 
 ## Creating Custom Plugins
 
-OctoCompose supports custom plugins that extend its functionality:
+We support custom plugins that extend the functionality:
 
 ### Plugin Interface
 
@@ -103,13 +105,13 @@ The following plugins are available in the default OctoCompose repositories:
 | Plugin Name | Description | Arguments |
 |-------------|-------------|-----------|
 | check-tcp-port | Checks for open TCP ports | port |
-| operator-run | Executes a service via the operator | args, env |
+| run-service | Executes a service via the operator | args, env |
 
 ### Health Check Plugins
 
 | Plugin Name | Description | Arguments |
 |-------------|-------------|-----------|
-| check-server-url | Validates URL accessibility | endpoint |
+| check-server-url | Validates URL accessibility | url |
 | check-tcp | Checks for a connection to a TCP port | port |
 | check-grpc | Checks gRPC service health | url, endpoint |
 | check-orbdrpc | Checks OrbDRPC service health | url, endpoint |

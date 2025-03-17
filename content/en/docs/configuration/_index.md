@@ -14,13 +14,24 @@ The configuration system in OctoCompose allows:
 
 - Merging configurations from multiple sources (local files, URLs)
   - When using URLs, you can use `gpg` to let the octoctl verify the signature of the config and it's includes.
-  - With remote URLs OctoCompose will refuse to run with an error if the remote provides no gpg signature for that config file.
+  - With remote URLs OctoCompose will refuse to run with an error if the remote provides no gpg signature for that config file, except you provide the `--insecure` flag.
 - Layering configurations (core settings with environment-specific overrides)
 - Templating for dynamic configurations
 - Version tracking for configuration sources
 - Validation through preflight checks
 
 This approach eliminates duplicate settings and separates core settings from customizations, making it easier to manage complex deployments.
+
+## Formats
+
+Although these examples are in YAML, OctoCompose supports multiple configuration formats:
+
+- yaml
+- json
+- toml
+
+When using a different format, the file extension should be used.
+Comments aren't preserved in all formats when Dumping/Comparing.
 
 ## Example `core` config
 
@@ -66,21 +77,6 @@ octoctl:
   project: yourproject # Path for the cache
   version: v2.0.0 # Version for the cache path
 
-  # Prompts will be asked before the operator starts or before preflight checks.
-  # Having prompts will disable all autostart features.
-  prompts: 
-    - name: "Enter the password for vault"
-      type: password
-      var: VAULT_PASSWORD
-
-  secrets:
-    # Secrets will be fetched per service from the given provider and supplied into the merged config
-    # to the service, here we have HashiCorp Vault as provider.
-    tool: vault-client
-    depends:
-      - service: vault
-    external: false
-
 operator:
   repos:
     core:
@@ -100,20 +96,24 @@ operator:
         noGlobals: true
         # This will disable templating for this service.
         noTemplate: true
-      healthCheck:
+      health:
         - tool: check-tcp # will check if a connection to that port is possible.
-          port: {{service.nats.port}} # This is the 9233 defined below or 4222 in the users config.
+          args:
+            port: {{service.nats.port}} # This is the 9233 defined below or 4222 in the users config.
+          enabled: true # Setting it to "false" will disable this health check.
           interval: 10s
           successTreshold: 1
           failureTreshold: 3
-      preflightCheck:
-        - tool: check-tcp-port  # will check for an open port, it will only run in `baremetal` envs.
-          port: {{service.nats.port}}
-        - tool: operator-run # tool `operator-run` will run the service trough the operator with the given arguments.
-          args: ["preflight"]
-      hooks:
-        preStart:
-          - tool: operator-run
+      preflight:
+        - tool: check-tcp-port  # will check for an open port, it will only run with specified operators, e.g. `baremetal`.
+          args:
+            port: {{service.nats.port}}
+        - tool: run-service # tool `run-service` will run the service trough the operator with the given arguments.
+          args:
+            args: ["preflight"]
+      init:
+        - tool: run-service
+          args:
             args: ["migrate"] 
     idp: {}
     auth-service:
@@ -121,18 +121,19 @@ operator:
         - service: idp
         - service: nats
     webdav: 
-      healthCheck:
+      health:
         - tool: check-grpc
-          url: {{service.webdav.server.grpc.listen}}           
-          endpoint: /health.v1alpha.Health/Healthz
+          args:
+            url: {{service.webdav.server.grpc.listen}}           
+            endpoint: /health.v1alpha.Health/Healthz
           interval: 10s
           successTreshold: 1
           failureTreshold: 3
-      preflightCheck:
-        - tool: check-server-url # will check if the given url is valid (TCP Port or Unix socket)
-          url: {{service.webdav.server.grpc.listen}}
-        - tool: operator-run # tool `operator-run` will run the service trough the operator with the given arguments.
-          args: ["preflight"]
+          failureTreshold: 3
+      preflight:
+        - tool: run-service # tool `run-service` will run the service trough the operator with the given arguments.
+          args:
+            args: ["preflight"]
       depends:
         - service: auth-service
 
@@ -174,14 +175,14 @@ include:
     # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml.asc
     versions:
       format: github
-      # Format github will autodetect the following url.
+      # Format "github" will autodetect the following url.
       # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml
     # Will be auto-detected by adding '.asc' to the url.
     # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
     versions:
       format: github
-      # Format github will autodetect the following url.
+      # Format "github" will autodetect the following url.
       # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
 
 # Globals are applied to each service.
@@ -214,6 +215,21 @@ octoctl:
   prefix: instance1
   api: https://rancher.example.com/k8s/clusters/local
   token: <token>
+
+  # Prompts will be asked before the operator starts or before preflight checks.
+  # Having prompts will disable all autostart features.
+  prompts: 
+    - name: "Enter the password for vault"
+      type: password
+      var: VAULT_PASSWORD
+
+  secrets:
+    # Secrets will be fetched per service from the given provider and supplied into the merged config
+    # to the service, here we have HashiCorp Vault as provider.
+    tool: vault-client
+    depends:
+      - service: vault
+    external: false
 
 operator:
   repos:

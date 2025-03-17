@@ -1,8 +1,6 @@
 ---
-title: Diagrams
+title: Notes about the Diagrams
 weight: 99
-description: >
-  Diagram for OctoCompose.
 ---
 
 ### The execution flow Diagram
@@ -94,7 +92,7 @@ flowchart TD
   subgraph "Preflight check Plugins ⚙️"
     operator_preflight_check
     check_tcp_port["check-tcp-port"]    
-    operator_run["operator-run"]
+    operator_run["run-service"]
   end
 
   subgraph "Notification Plugins 📢"

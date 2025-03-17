@@ -1,52 +1,100 @@
 ---
 title: Repository
 weight: 2
-description: >
-  Configuration system and examples.
 ---
 
-This defines where to get binaries/sources/docker containers and howto run them.
+This defines where to get binaries/sources/oci images.
 
+Repos will always be templated.
+
+## Template Variables
+
+- `{{OS}}`: The target OS
+- `{{ARCH}}`: The target architecture
+
+## Syntax
+
+### For operators
+
+```yaml
+operator:
+  baremetal:
+    executes: host # One of `host` and `oci`
+    client:
+      - os: linux
+        arch: amd64
+        url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-client-linux-amd64
+        sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-client-linux-amd64.sha256
+        binary: operator-baremetal-client
+    server:
+      - os: linux
+        arch: amd64
+        url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-server-linux-amd64
+        sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-server-linux-amd64.sha256
+        binary: operator-baremetal-server
+```
+
+### For Tools
+
+```yaml
+tool:
+  health:
+    check-tcp:
+      host:
+        - os: linux
+          arch: amd64
+          url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-amd64
+          sha256Url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-amd64.sha256
+          # Binary inside the archive.
+          binary: check-tcp
+        - os: linux
+          arch: arm64
+          url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-arm64
+          sha256Url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-arm64.sha256
+          # Binary inside the archive.
+          binary: check-tcp
+      oci:
+        - registry: docker.io
+          image: octocompose/plugin-health-check-tcp
+          tag: v0.0.1
+          cmd: /usr/local/bin/check-tcp
+```
+
+### For Services
 
 ```yaml
 # We allow includes in repos.
 include:
     # This example might have some tools which yourproject v2.0.0 needs.
-    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/
+    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/
     # This allows to use the same repo for Development and Production (file:// vs. https://)
-    # ?template=true means that the config will be templated by text/template with a yet to be defined set of variables.
-  - url: ./tools/yourproject.yaml?template=true
-    gpg: ./tools/yourproject.yaml.asc
-  
-    # This example will add the service abc.
-  - url: ./services/abc.yaml?template=true
-    gpg: ./services/abc.yaml.asc
+  - url: ./service/webdav.yaml
+    gpg: ./service/webdav.yaml.asc
 
 service:
   # Each service has it's own entry nats is just a template for many of them.
   nats:
-    binary:
+    host:
       - os: linux
         arch: amd64
         url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64
-        sha256URL: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64.sha256
-        archiveBinaryPath: yourproject-nats
-        args: ["server"]
+        sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64.sha256
+        # Binary inside the archive.
+        binary: yourproject-nats
       - os: linux
         arch: arm64
         url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-arm64
-        sha256URL: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-arm64.sha256
-        archiveBinaryPath: yourproject-nats
-        args: ["server"]
+        sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-arm64.sha256
+        # Binary inside the archive.
+        binary: yourproject-nats
     oci:
-      - arch: amd64
-        registry: docker.io
+      - registry: docker.io
         image: yourprojecters/yourproject-nats
         tag: v2.0.0
     source:
       url: https://github.com/yourproject/yourproject.git
       branch: v2.0.0
       buildCmds:
-        - OS={{env.GOOS}} ARCH={{env.GOARCH}} make yourproject-nats
-      binaryPath: dist/nats/yourproject-nats-{{env.GOOS}}-{{env.GOARCH}}
+        - GOOS={{OS}} GOARCH={{ARCH}} make yourproject-nats
+      binaryPath: dist/nats/yourproject-nats-{{OS}}-{{ARCH}}
 ```

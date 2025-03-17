@@ -110,7 +110,7 @@ params:
   github_repo: https://github.com/octocompose/docs
 
   # An optional link to a related project repo. For example, the sibling repository where your product code lives.
-  github_project_repo: https://github.com/octcompose/octoctl
+  github_project_repo: https://github.com/octocompose/octoctl
 
   # Specify a value here if your content directory is not in your repo's root directory
   # github_subdir: ""
@@ -120,10 +120,10 @@ params:
   github_branch: main
 
   # Google Custom Search Engine ID. Remove or comment out to disable search.
-  gcs_engine_id: 50b538ee8203443a4
+  #gcs_engine_id: 50b538ee8203443a4
 
   # Enable Lunr.js offline search
-  offlineSearch: false
+  offlineSearch: true
 
   # Enable syntax highlighting and copy buttons on code blocks with Prism
   prism_syntax_highlighting: false
@@ -157,9 +157,9 @@ params:
       enable: true
       # The responses that the user sees after clicking "yes" (the page was helpful) or "no" (the page was not helpful).
       'yes': >-
-        Glad to hear it! Please <a href="https://github.com/octcompose/docs/issues/new">tell us how we can improve</a>.
+        Glad to hear it! Please <a href="https://github.com/octocompose/docs/issues/new">tell us how we can improve</a>.
       'no': >-
-        Sorry to hear that. Please <a href="https://github.com/octcompose/docs/issues/new">tell us how we can improve</a>.
+        Sorry to hear that. Please <a href="https://github.com/octocompose/docs/issues/new">tell us how we can improve</a>.
 
     # Adds a reading time to the top of each doc.
     # If you want this feature, but occasionally need to remove the Reading time from a single page,
@@ -174,7 +174,7 @@ params:
       #   url: https://example.org/mail
       #   icon: fa fa-envelope
       #   desc: Discussion and help from your fellow users
-      - name: Matrix
+      - name: "Matrix (User)"
         url: https://matrix.to/#/#octocompose:matrix.org
         icon: fa fa-matrix-org
         desc: Join our Matrix space for discussions and support
@@ -188,8 +188,8 @@ params:
         url: https://github.com/octocompose/octocompose
         icon: fab fa-github
         desc: Development takes place here!
-      - name: Matrix
-        url: https://matrix.to/#/#octocompose:matrix.org
+      - name: "Matrix (Developer)"
+        url: https://matrix.to/#/#octocompose-dev:matrix.org
         icon: fa fa-matrix-org
         desc: Join our Matrix space for discussions and support
       # - name: Developer mailing list

@@ -18,26 +18,19 @@ octoctl [command] [subcommand] [options]
 
 ### octoctl trust
 
-Manage gpg keys.
+Manage gpg public keys.
 
 Subcommands:
-- `add`: Add a new gpg key
-- `remove`: Remove a trusted gpg key
-- `list`: List all trusted gpg keys
-- `all`: Trust all gpg keys the config requires
+- `add`: Add a new gpg public key
+- `remove`: Remove a trusted gpg public key
+- `list`: List all trusted gpg public keys
+- `all`: Trust all gpg public keys the config requires
 
 ```bash
 octoctl trust add [key-id]
 octoctl trust remove [key-id]
 octoctl trust list
-octoctl --config config.yaml trust all --yes
-```
-
-Options:
-- `--file`: Path to a gpg public key file
-
-```bash
-octoctl trust add --file [path]
+octoctl --config config.yaml trust all
 ```
 
 ### octoctl start
@@ -51,6 +44,7 @@ octoctl start [service-name]
 If `service-name` is provided, only that service will be started.
 
 Options:
+- `--insecure`: Disable gpg verification
 - `--force`: Force start even if preflight checks fail
 - `--no-deps`: Don't start dependencies
 
@@ -76,6 +70,7 @@ octoctl restart [service-name]
 ```
 
 Options:
+- `--insecure`: Disable gpg verification
 - `--force`: Force restart even if preflight checks fails.
 
 ### octoctl status
@@ -114,6 +109,7 @@ octoctl check [service-name]
 ```
 
 Options:
+- `--insecure`: Disable gpg verification
 - `--verbose`: Detailed check output
 - `--timeout=30s`: Check timeout duration
 
@@ -127,10 +123,13 @@ Subcommands:
 - `diff`: Shows differences between configurations
 
 ```bash
-octoctl config validate
+octoctl config validate [--insecure]
 octoctl config show [service-name]
 octoctl config diff [old-version] [new-version]
 ```
+
+Options:
+- `--insecure`: Disable gpg verification
 
 ### octoctl autostart
 
@@ -165,10 +164,11 @@ octoctl upgrade [version]
 If `version` is provided, upgrades to that specific version.
 
 Options:
+- `--insecure`: Disable gpg verification
 - `--dry-run`: Show what would be upgraded without making changes
 - `--force`: Force upgrade even if there are compatibility issues
 
-## Common Options
+## Global options
 
 These options apply to most commands:
 

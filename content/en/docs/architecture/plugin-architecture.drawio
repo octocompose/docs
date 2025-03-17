@@ -181,7 +181,7 @@
                 <mxCell id="ZHiZysWRDo9-fRYJETXd-14" value="check-tcp-port" style="whiteSpace=wrap;strokeWidth=2;" parent="ZHiZysWRDo9-fRYJETXd-62" vertex="1">
                     <mxGeometry x="68" y="129" width="161" height="54" as="geometry"/>
                 </mxCell>
-                <mxCell id="ZHiZysWRDo9-fRYJETXd-15" value="operator-run" style="whiteSpace=wrap;strokeWidth=2;" parent="ZHiZysWRDo9-fRYJETXd-62" vertex="1">
+                <mxCell id="ZHiZysWRDo9-fRYJETXd-15" value="run-service" style="whiteSpace=wrap;strokeWidth=2;" parent="ZHiZysWRDo9-fRYJETXd-62" vertex="1">
                     <mxGeometry x="279" y="129" width="148" height="54" as="geometry"/>
                 </mxCell>
                 <mxCell id="ZHiZysWRDo9-fRYJETXd-36" value="" style="curved=1;startArrow=none;endArrow=block;entryX=0.5;entryY=0.01;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="ZHiZysWRDo9-fRYJETXd-62" source="ZHiZysWRDo9-fRYJETXd-4" target="ZHiZysWRDo9-fRYJETXd-14" edge="1">
