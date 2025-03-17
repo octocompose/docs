@@ -12,7 +12,7 @@ This defines where to get binaries/sources/docker containers and howto run them.
 # We allow includes in repos.
 include:
     # This example might have some tools which yourproject v2.0.0 needs.
-    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/yourproject/orberator-chart/refs/tags/v2.0.0/repo/
+    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/
     # This allows to use the same repo for Development and Production (file:// vs. https://)
     # ?template=true means that the config will be templated by text/template with a yet to be defined set of variables.
   - url: ./tools/yourproject.yaml?template=true
@@ -47,6 +47,6 @@ service:
       url: https://github.com/yourproject/yourproject.git
       branch: v2.0.0
       buildCmds:
-        - OS={{GOOS}} ARCH={{GOARCH}} make yourproject-nats
-      binaryPath: dist/nats/yourproject-nats-{{GOOS}}-{{GOARCH}}
+        - OS={{env.GOOS}} ARCH={{env.GOARCH}} make yourproject-nats
+      binaryPath: dist/nats/yourproject-nats-{{env.GOOS}}-{{env.GOARCH}}
 ```

@@ -89,6 +89,8 @@ operator:
       config:
         # This will disable the global config for this service.
         noGlobals: true
+        # This will disable templating for this service.
+        noTemplate: true
       priority: 100
       healthCheck:
         - tool: check-tcp # will check if a connection to that port is possible.
@@ -262,8 +264,12 @@ OctoCompose can track versions of configuration sources, enabling automated vers
 
 ```yaml
 include:
-  - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml?template=true
-    versions: github
+  - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml
+    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
+    versions:
+      format: github
+      # Format github will autodetect the following url.
+      # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
 ```
 
 This allows OctoCompose to check for newer versions of the configuration and offer updates when available.

@@ -74,6 +74,8 @@ flowchart TD
 
 ### The plugin architecture Diagram
 
+Edited with Draw.io - file [plugin-architecture.drawio](/docs/architecture/plugin-architecture.drawio)
+
 ```
 flowchart TD
   %% Define main components
