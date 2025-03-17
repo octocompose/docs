@@ -36,7 +36,7 @@ We do a [Pull Request](https://github.com/octcompose/octcompose/pulls) contribut
 {{% /blocks/feature %}}
 
 
-{{% blocks/feature icon="fa fa-matrix-org" title="Follow us on Matrix!" url="https://matrix.to/#/#go-orb:jochum.dev" %}}
+{{% blocks/feature icon="fa fa-matrix-org" title="Follow us on Matrix!" url="https://matrix.to/#/#octocompose:matrix.org" %}}
 For announcement of latest features etc.
 {{% /blocks/feature %}}
 

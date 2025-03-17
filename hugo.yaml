@@ -175,7 +175,7 @@ params:
       #   icon: fa fa-envelope
       #   desc: Discussion and help from your fellow users
       - name: Matrix
-        url: https://matrix.to/#/#octocompose:jochum.dev
+        url: https://matrix.to/#/#octocompose:matrix.org
         icon: fa fa-matrix-org
         desc: Join our Matrix space for discussions and support
       # - name: Stack Overflow
@@ -189,7 +189,7 @@ params:
         icon: fab fa-github
         desc: Development takes place here!
       - name: Matrix
-        url: https://matrix.to/#/#octocompose:jochum.dev
+        url: https://matrix.to/#/#octocompose:matrix.org
         icon: fa fa-matrix-org
         desc: Join our Matrix space for discussions and support
       # - name: Developer mailing list

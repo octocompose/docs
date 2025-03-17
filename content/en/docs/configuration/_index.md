@@ -14,6 +14,7 @@ The configuration system in OctoCompose allows:
 
 - Merging configurations from multiple sources (local files, URLs)
   - When using URLs, you can use `gpg` to let the octoctl verify the signature of the config and it's includes.
+  - With remote URLs OctoCompose will refuse to run with an error if the remote provides no gpg signature for that config file.
 - Layering configurations (core settings with environment-specific overrides)
 - Templating for dynamic configurations
 - Version tracking for configuration sources
@@ -31,10 +32,10 @@ Here is an example config which you might host at:
 globals:
   client:
     preferredTransports: 
-      - orbdrpc # orb uses it's own wire Format for results on top of DRPC to deliver responses for metadata.
+      - orbdrpc # orb uses it's own wire Format for results on top of DRPC to deliver responses with metadata.
       - grpc
   server:
-    drpc:
+    orbdrpc:
       # Templating happens at the service level.
       listen: unix://{{env.XDG_RUNTIME_DIR}}/{{project.Name}}/{{project.ID}}/{{service.App.Name}}-drpc.sock
     grpc:
@@ -84,14 +85,21 @@ operator:
   repos:
     core:
       url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/core.yaml
+      # Will be auto-detected by adding '.asc' to the url.
+      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/core.yaml.asc
   services:
+    vault:
+      config:
+        # This will disable the global config for this service.
+        noGlobals: true
+        # This will disable templating for this service.
+        noTemplate: true
     nats:
       config:
         # This will disable the global config for this service.
         noGlobals: true
         # This will disable templating for this service.
         noTemplate: true
-      priority: 100
       healthCheck:
         - tool: check-tcp # will check if a connection to that port is possible.
           port: {{service.nats.port}} # This is the 9233 defined below or 4222 in the users config.
@@ -107,15 +115,12 @@ operator:
         preStart:
           - tool: operator-run
             args: ["migrate"] 
-    idp:
-      priority: 200
+    idp: {}
     auth-service:
-      priority: 300
       depends:
         - service: idp
         - service: nats
     webdav: 
-      priority: 1000
       healthCheck:
         - tool: check-grpc
           url: {{service.webdav.server.grpc.listen}}           
@@ -142,15 +147,15 @@ service:
 And here is an extensions for `collabora`:
 
 ```yaml
-octoctl:
+operator:
   repos:
     collabora:
       url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml
-      gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml.asc
+      # Will be auto-detected by adding '.asc' to the url.
+      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml.asc
   
   services:
-    collabora:
-      priority: 1500
+    collabora: {}
 ```
 
 ## The users config.yaml
@@ -165,13 +170,15 @@ project:
 
 include:
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml
-    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml.asc
+    # Will be auto-detected by adding '.asc' to the url.
+    # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml.asc
     versions:
       format: github
       # Format github will autodetect the following url.
       # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml
-    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
+    # Will be auto-detected by adding '.asc' to the url.
+    # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
     versions:
       format: github
       # Format github will autodetect the following url.
@@ -180,7 +187,7 @@ include:
 # Globals are applied to each service.
 globals:
   server:
-    drpc:
+    orbdrpc:
       listen: tcp://0.0.0.0:8081
     grpc:
       listen: tcp://0.0.0.0:8080
@@ -194,7 +201,7 @@ globals:
   # This defines helper variables for the operator.
   operator:
     ports:
-      drpc: 8081
+      orbdrpc: 8081
       grpc: 8080
 
 # The configuration to setup the operator, this wont get uploaded.
@@ -219,7 +226,6 @@ operator:
     webdav:
       replicas: 2
     my-supi:
-      priority: 2000
       depends:
         - service: auth-service
     badservice:
@@ -256,7 +262,7 @@ OctoCompose supports templating in configuration files using Go's text/template 
 - Service-specific values (`{{service.App.Name}}`)
 
 Templates are processed when the `?template=true` parameter is added to included configuration URLs.
-Normaly you will templates only at the service level. The service will always template it's config.
+Except for repos you will not need to add the `?template=true` parameter, services get always a templated config, except they have the `operator.services.<service>.config.noTemplate` flag set.
 
 ## Version Tracking
 
@@ -265,7 +271,8 @@ OctoCompose can track versions of configuration sources, enabling automated vers
 ```yaml
 include:
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml
-    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
+    # Will be auto-detected by adding '.asc' to the url.
+    # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
     versions:
       format: github
       # Format github will autodetect the following url.

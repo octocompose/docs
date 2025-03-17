@@ -6,7 +6,7 @@ description: >
   Command reference and usage examples for the OctoCompose CLI.
 ---
 
-The `octoctl` command line interface provides a comprehensive set of commands for managing your OctoCompose deployments.
+The `octoctl` command line interface provides a set of commands for managing your deployments.
 
 ## Basic Usage
 
