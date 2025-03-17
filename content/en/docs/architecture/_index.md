@@ -16,7 +16,7 @@ You might see it as alternative to docker compose, but it will run baremetal and
 
 It should be able to download binaries from various sources or `maybe` build them from source using git.
 
-![Execution Flow](/docs/architecture/execution-flow.png)
+![Execution Flow](/docs/architecture/execution-flow.svg)
 
 ## Modular Architecture
 
@@ -67,14 +67,12 @@ The configuration merging system is a key feature of OctoCompose:
    - Service-specific configurations
 
 2. **Merging Process**:
-   - OctoCompose downloads and processes included configuration files
+   - Downloads and processes included configuration files
    - Templates are processed if the ?template=true parameter is used
    - Configurations are layered with base configs from remote sources, then user-specific overrides
-   - Version tracking is maintained for configuration files
 
 3. **Resulting Configuration**:
-   - Global settings section applied to all services
+   - Global settings section applied to all services, except those that have a "noGlobal" config flag.
    - Operator-specific configuration
    - Service-specific configurations
    - Secrets management integration
-   - Notification settings
