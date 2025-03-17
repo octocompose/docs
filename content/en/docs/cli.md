@@ -16,6 +16,30 @@ octoctl [command] [subcommand] [options]
 
 ## Commands
 
+### octoctl trust
+
+Manage gpg keys.
+
+Subcommands:
+- `add`: Add a new gpg key
+- `remove`: Remove a trusted gpg key
+- `list`: List all trusted gpg keys
+- `all`: Trust all gpg keys the config requires
+
+```bash
+octoctl trust add [key-id]
+octoctl trust remove [key-id]
+octoctl trust list
+octoctl --config config.yaml trust all --yes
+```
+
+Options:
+- `--file`: Path to a gpg public key file
+
+```bash
+octoctl trust add --file [path]
+```
+
 ### octoctl start
 
 Starts all services defined in the configuration.
@@ -27,7 +51,7 @@ octoctl start [service-name]
 If `service-name` is provided, only that service will be started.
 
 Options:
-- `--force`: Force start even if health checks fail
+- `--force`: Force start even if preflight checks fail
 - `--no-deps`: Don't start dependencies
 
 ### octoctl stop
@@ -52,7 +76,7 @@ octoctl restart [service-name]
 ```
 
 Options:
-- `--force`: Force restart even if preflight checks fail
+- `--force`: Force restart even if preflight checks fails.
 
 ### octoctl status
 

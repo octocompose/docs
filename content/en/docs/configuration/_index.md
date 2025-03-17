@@ -13,6 +13,7 @@ OctoCompose uses a powerful configuration system that shares config with the app
 The configuration system in OctoCompose allows:
 
 - Merging configurations from multiple sources (local files, URLs)
+  - When using URLs, you can use `gpg` to let the octoctl verify the signature of the config and it's includes.
 - Layering configurations (core settings with environment-specific overrides)
 - Templating for dynamic configurations
 - Version tracking for configuration sources
@@ -143,6 +144,7 @@ octoctl:
   repos:
     collabora:
       url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml
+      gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml.asc
   
   services:
     collabora:
@@ -161,9 +163,17 @@ project:
 
 include:
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml
-    versions: github
+    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml.asc
+    versions:
+      format: github
+      # Format github will autodetect the following url.
+      # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml
-    versions: github
+    gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/collabora.yaml.asc
+    versions:
+      format: github
+      # Format github will autodetect the following url.
+      # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
 
 # Globals are applied to each service.
 globals:
@@ -273,11 +283,12 @@ This layered approach allows you to maintain core settings in a central location
 Sensitive information can be managed securely through providers like HashiCorp Vault:
 
 ```yaml
-secrets:
-  tool: vault-client
-  depends:
-    - service: vault
-  external: false
+octoctl:
+  secrets:
+    tool: vault-client
+    depends:
+      - service: vault
+    external: false
 ```
 
 Secrets are fetched per service and supplied into the merged config, ensuring that sensitive data is not exposed in configuration files.
@@ -287,10 +298,11 @@ Secrets are fetched per service and supplied into the merged config, ensuring th
 OctoCompose supports interactive prompts for collecting sensitive information during startup:
 
 ```yaml
-prompts: 
-  - name: "Enter the password for vault"
-    type: password
-    var: VAULT_PASSWORD
+octoctl:
+  prompts: 
+    - name: "Enter the password for vault"
+      type: password
+      var: VAULT_PASSWORD
 ```
 
 These prompts are treated as high-value secrets and will disable autostart features.
