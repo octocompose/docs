@@ -19,9 +19,7 @@ The first phase of development focuses on creating the core functionality for th
 
 This initial milestone explicitly does not include:
 - GPG verification
-- Health checking capabilities
 - Preflight checking
-- Notification systems
 - Secret management and user prompts
 - Source builds
 - Version tracking
@@ -44,12 +42,10 @@ The second phase builds upon the baremetal operator by adding preflight check ca
 
 The third phase extends OctoCompose to support Docker deployments.
 
-## Future Milestones
+### Future Milestones
 
 After completing the four primary milestones, development will focus on:
 
-- Health checking implementation for the Baremetal operator
-- Notification systems
 - Secret management
 - Kubernetes operator
 - Source builds

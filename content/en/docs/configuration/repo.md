@@ -19,19 +19,12 @@ Repos will always be templated.
 ```yaml
 operator:
   baremetal:
-    executes: host # One of `host` and `oci`
-    client:
+    binary:
       - os: linux
         arch: amd64
-        url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-client-linux-amd64
-        sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-client-linux-amd64.sha256
-        binary: operator-baremetal-client
-    server:
-      - os: linux
-        arch: amd64
-        url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-server-linux-amd64
-        sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-server-linux-amd64.sha256
-        binary: operator-baremetal-server
+        url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64
+        sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64.sha256
+        cmd: operator-baremetal
 ```
 
 ### For Tools
@@ -40,24 +33,24 @@ operator:
 tool:
   health:
     check-tcp:
-      host:
+      baremetal:
         - os: linux
           arch: amd64
-          url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-amd64
-          sha256Url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-amd64.sha256
+          url: https://github.com/octocompose/tools/releases/download/v0.0.1/health-check-tcp-linux-amd64
+          sha256Url: https://github.com/octocompose/tools/releases/download/v0.0.1/health-check-tcp-linux-amd64.sha256
           # Binary inside the archive.
-          binary: check-tcp
+          cmd: health-check-tcp
         - os: linux
           arch: arm64
-          url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-arm64
-          sha256Url: https://github.com/octocompose/plugins/releases/download/v0.0.1/check-tcp-linux-arm64.sha256
+          url: https://github.com/octocompose/tools/releases/download/v0.0.1/health-check-tcp-linux-arm64
+          sha256Url: https://github.com/octocompose/tools/releases/download/v0.0.1/health-check-tcp-linux-arm64.sha256
           # Binary inside the archive.
-          binary: check-tcp
-      oci:
-        - registry: docker.io
-          image: octocompose/plugin-health-check-tcp
-          tag: v0.0.1
-          cmd: /usr/local/bin/check-tcp
+          cmd: health-check-tcp
+      docker:
+        registry: docker.io
+        image: octocompose/tools-health-check-tcp
+        tag: v0.0.1
+        cmd: /usr/local/bin/health-check-tcp
 ```
 
 ### For Services
@@ -74,27 +67,27 @@ include:
 service:
   # Each service has it's own entry nats is just a template for many of them.
   nats:
-    host:
+    baremetal:
       - os: linux
         arch: amd64
         url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64
         sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64.sha256
         # Binary inside the archive.
-        binary: yourproject-nats
+        cmd: yourproject-nats
       - os: linux
         arch: arm64
         url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-arm64
         sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-arm64.sha256
         # Binary inside the archive.
-        binary: yourproject-nats
-    oci:
-      - registry: docker.io
-        image: yourprojecters/yourproject-nats
-        tag: v2.0.0
+        cmd: yourproject-nats
+    docker:
+      registry: docker.io
+      image: yourproject/yourproject-nats
+      tag: v2.0.0
     source:
       url: https://github.com/yourproject/yourproject.git
       branch: v2.0.0
       buildCmds:
         - GOOS={{OS}} GOARCH={{ARCH}} make yourproject-nats
-      binaryPath: dist/nats/yourproject-nats-{{OS}}-{{ARCH}}
+      cmd: dist/nats/yourproject-nats-{{OS}}-{{ARCH}}
 ```

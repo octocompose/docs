@@ -21,7 +21,6 @@ OctoCompose combines the flexibility of configuration-as-code with the simplicit
 - **Environment Agnostic**: Run the same configuration in baremetal, Docker, or Kubernetes
 - **Plugin Architecture**: Extensible design keeps the core lightweight
 - **Powerful Configuration**: Advanced config merging from multiple sources with templating
-- **Health Monitoring**: Built-in health checks with notification capabilities
 - **Version Management**: Track and manage versions for smooth upgrades
 - **Secret Management**: Securely handle sensitive information
 

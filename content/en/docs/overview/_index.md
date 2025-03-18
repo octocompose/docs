@@ -15,7 +15,6 @@ Unlike traditional orchestration tools that lock you into a specific environment
 - **Environment Agnostic**: Run the same configuration in baremetal, Docker, or Kubernetes
 - **Plugin Architecture**: Extensible design keeps the core lightweight
 - **Powerful Configuration**: Advanced config merging from multiple sources with templating
-- **Health Monitoring**: Built-in health checks with notification capabilities
 - **Version Management**: Track and manage versions for smooth upgrades
 - **Secret Management**: Securely handle sensitive information
 

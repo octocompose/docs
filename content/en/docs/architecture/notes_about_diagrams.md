@@ -8,9 +8,10 @@ weight: 99
 Created with [ChatGPT](https://chatgpt.com/g/g-5QhhdsfDj-presentation-diagram-generator-by-showme)
 
 ```
-I have a tool called octoctl, it's a launcher that downloads an operator-client which then downloads and executes an operator.
-There will be different operators baremetal, docker and kubernetes are provided but there can be more.
+I have a tool called octoctl, it's a launcher that downloads and executes an operator.
+There will be different operators baremetal, docker and kubernetes are provided but there can be more, octoctl will download the operator from a repository.
 After the operator runs it will run a set of configured services. Take nats, idp, auth-service, webdav and my-supi as example.
+Please describe it as sequence diagram.
 ```
 
 ### The config merge Diagram
@@ -30,7 +31,6 @@ flowchart TD
   subgraph "Merging Process"
     Download["Download & Process Includes ⬇️"]
     CacheIncludes["Cache Includes"]
-    Template["Apply Templating (?template=true) 🏗️"]
     BaseConfig["Base Config (Remote) 🏗️"]
     Override["User-Specific Overrides (Local) 🎛️"]
   end
@@ -40,12 +40,12 @@ flowchart TD
     MergedConfig["Merged Config ⚙️"]
 
     subgraph "Apply Globals #127760;"
-        Globals["Load globals (noGlobals=False)"]
+        Globals["Load globals (config.globals=true)"]
         Locals["Overwrite with service specific config"]
     end
 
     OperatorConfig["Operator Configuration 🎛️"]
-    ServiceSpecificTemplate["Apply Templating (?template=true) 🏗️"]
+    ServiceSpecificTemplate["Apply Templating (config.template=true) 🏗️"]
     ServiceSpecific["Service Configurations 🏗️"]
   end
 
@@ -60,8 +60,7 @@ flowchart TD
   LocalConfig --> Download
   RemoteConfig --> Download
   Download --> CacheIncludes
-  Download --> Template
-  Template --> BaseConfig
+  Download --> BaseConfig
   BaseConfig -->|Merge| Override
   Override --> MergedConfig
   MergedConfig --> Globals
@@ -72,42 +71,19 @@ flowchart TD
 
 ### The plugin architecture Diagram
 
-Edited with Draw.io - file [plugin-architecture.drawio](/docs/architecture/plugin-architecture.drawio)
+Created with [mermaidchart.com](https://mermaidchart.com)
 
 ```
 flowchart TD
   %% Define main components
   Octoctl["octoctl 🐙"]
-  OperatorClient{"Operator Client"}
   Operator{"Operator"}
 
   %% Define plugin categories
-  subgraph "Health check Plugins 📡"
-    operator_health_check
-    check_tcp["check-tcp"]
-    check_grpc["check-grpc"]
-    check_server_url["check-server-url"]
-  end
-
   subgraph "Preflight check Plugins ⚙️"
     operator_preflight_check
     check_tcp_port["check-tcp-port"]    
-    operator_run["run-service"]
-  end
-
-  subgraph "Notification Plugins 📢"
-    operator_notifications
-    smtp["smtp"]
-    slack["slack"]
-    signal["signal"]
-    matrix["matrix"]
-    telegram["telegram"]
-    discord["discord"]
-  end
-
-  subgraph "Secret Manager Plugins 🔒"
-    octoctl_secrets_manager
-    vault["vault"]
+    operator_run["run (args => preflight)"]
   end
 
   subgraph "Managed Services 🛠️"
@@ -118,23 +94,16 @@ flowchart TD
     my_supi["my-supi"]
   end
 
-  Octoctl -->|"Creates"| OperatorClient
-  OperatorClient -->|"Creates"| Operator
-  Octoctl -->|"Queries"| octoctl_secrets_manager
+  Octoctl -->|"Creates"| Operator
 
   %% Plugins
-  operator_health_check --> check_tcp & check_grpc & check_server_url
   operator_preflight_check --> check_tcp_port & operator_run
-  operator_notifications --> smtp & slack & signal & matrix & telegram & discord
-  octoctl_secrets_manager --> vault
 
   %% Services
   operator_services --> nats & webdav & auth_service & my_supi
   
 
   %% Operator Connections
-  Operator -->|"Executes and Parses Output"| operator_health_check
   Operator -->|"Executes and Parses Output"| operator_preflight_check
-  Operator -->|"Executes and Parses Output"| operator_notifications
   Operator -->|"Executes"| operator_services
 ```

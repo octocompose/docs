@@ -80,7 +80,6 @@ All operators provide these common features:
 
 - Plugin execution and output parsing
 - Configuration merging
-- Health checking
 - Service dependency management
 - Version tracking
 - Upgrade coordination

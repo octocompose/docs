@@ -35,13 +35,15 @@ operator:
   services:
     my-service:
       preflight:
-        - tool: check-tcp
+        - tool: check-tcp-port
           args:
             port: 8080
+      health:
         - tool: check-grpc
           args:
-            url: grpc://localhost:9000
-            endpoint: /health.V1alpha.Health/HealthZ
+            network: tcp
+            address: localhost:9000
+            endpoint: /grpc.health.v1.Health/Check
 ```
 
 ### Plugin Repositories
@@ -102,28 +104,22 @@ The following plugins are available in the default OctoCompose repositories:
 
 ### Preflight Check Plugins
 
-| Plugin Name | Description | Arguments |
-|-------------|-------------|-----------|
-| check-tcp-port | Checks for open TCP ports | port |
-| run-service | Executes a service via the operator | args, env |
+| Plugin Name      | Description | Arguments |
+|------------------|-------------|-----------|
+| check-tcp-port   | Checks for open TCP ports | port |
+| run-service      | Executes a service via the operator | args, env |
 
 ### Health Check Plugins
 
-| Plugin Name | Description | Arguments |
-|-------------|-------------|-----------|
-| check-server-url | Validates URL accessibility | url |
-| check-tcp | Checks for a connection to a TCP port | port |
-| check-grpc | Checks gRPC service health | url, endpoint |
-| check-orbdrpc | Checks OrbDRPC service health | url, endpoint |
-
-### Notification Plugins
-
-| Category    | Plugin Name | Description | Arguments |
-|-------------|-------------|-------------|-----------|
-| notification | smtp       | Email notifications | server, port, username, password, from, to |
+| Plugin Name      | Description | Arguments |
+|------------------|-------------|-----------|
+| check-server-url | Validates URL accessibility | network, address, endpoint, plaintext |
+| check-tcp        | Checks for a connection to a TCP port | port |
+| check-grpc       | Checks gRPC service health | network, address, endpoint, plaintext |
+| check-orbdrpc    | Checks OrbDRPC service health | network, address, endpoint |
 
 ### Secret Manager Plugins
 
-| Category    | Plugin Name | Description | Arguments |
-|-------------|-------------|-------------|-----------|
-| secret      | vault-client | HashiCorp Vault integration | address, token/auth_method, path |
+| Plugin Name      | Description | Arguments |
+|------------------|-------------|-----------|
+| vault-client     | HashiCorp Vault integration | address, token/auth_method, path |
