@@ -91,57 +91,63 @@ octoctl:
 
 services:
   nats:
-    config:
-      noTemplate: true
-    health:
-      - tool: check-tcp # will check if a connection to that port is possible.
-        args: 
-          - {{configs.nats.port}} # This is the 9233 defined below or 4222 in the example users config.
-        enabled: true # Setting it to "false" will disable this health check.
-        successThreshold: 1
-        failureThreshold: 3
-    validate:
-      - tool: check-open-tcp-port  # will check for an open tcp port
-        operators: [baremetal]
-        args:
-          - {{configs.nats.port}}
+    octocompose:
+      config:
+        noTemplate: true
+      health:
+        - tool: check-tcp # will check if a connection to that port is possible.
+          args: 
+            - {{configs.nats.port}} # This is the 9233 defined below or 4222 in the example users config.
+          enabled: true # Setting it to "false" will disable this health check.
+          successThreshold: 1
+          failureThreshold: 3
+      validate:
+        - tool: check-open-tcp-port  # will check for an open tcp port
+          operators: [baremetal]
+          args:
+            - {{configs.nats.port}}
   idp:
-    config:
-      globals: demoproject
-      withServiceName: true # Will prepend the generated config with the service name, defaults to false.
-  auth-service:
-    config:
-      globals: demoproject
-    depends:
-      - service: idp
-      - service: nats
+    octocompose:
+      config:
+        globals: demoproject
+        withServiceName: true # Will prepend the generated config with the service name, defaults to false.
+  auth_service:
+    octocompose:
+      config:
+        globals: demoproject
+    depends_on:
+      idp:
+        condition: service_started
+      nats:
+        condition: service_started
   webdav: 
-    config:
-      globals: demoproject
-    depends:
-      - health: auth-service
-    health:
-      - tool: check-grpc
-        args:
-          - "--network"
-          - "{{.configs.webdav.server.grpc.network}}"
-          - "--listen"
-          - "{{.configs.webdav.server.grpc.listen}}"
-          # You can leave the endpoint for the default grpc Health check empty.
-          # https://grpc.io/docs/guides/health-checking/
-          # https://github.com/grpc/grpc-proto/blob/master/grpc/health/v1/health.proto
-          - "--endpoint"
-          - /grpc.health.v1.Health/Check
-          - "--plaintext"
-        successThreshold: 1
-        failureThreshold: 3
-    validate:
-      - tool: run # tool `run` will run the service trough the operator with the given arguments.
-        args: ["validate"]
-    init:
-      - tool: run
-        args: ["migrate"]
-    args: ["server"]
+    depends_on:
+      auth_service:
+        condition: service_started
+    octocompose:
+      config:
+        globals: demoproject
+      health:
+        - tool: check-grpc
+          args:
+            - "--network"
+            - "{{.configs.webdav.server.grpc.network}}"
+            - "--listen"
+            - "{{.configs.webdav.server.grpc.listen}}"
+            # You can leave the endpoint for the default grpc Health check empty.
+            # https://grpc.io/docs/guides/health-checking/
+            # https://github.com/grpc/grpc-proto/blob/master/grpc/health/v1/health.proto
+            - "--endpoint"
+            - /grpc.health.v1.Health/Check
+            - "--plaintext"
+          successThreshold: 1
+          failureThreshold: 3
+      validate:
+        - tool: run # tool `run` will run the service trough the operator with the given arguments.
+          args: ["validate"]
+      init:
+        - tool: run
+          args: ["migrate"]
 ```
 
 ### Extensions config example
