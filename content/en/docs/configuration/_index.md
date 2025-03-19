@@ -178,35 +178,7 @@ include:
       # Format "github" will autodetect the following url.
       # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
 
-# Globals are applied to each service.
-globals:
-  yourproject:
-    server:
-      orbdrpc:
-        listenNetwork: tcp
-        listenAddress: 0.0.0.0:8081
-      grpc:
-        listenNetwork: tcp
-        listenAddress: 0.0.0.0:8080
-    kvstore:
-      servers:
-        - nats://nats:4222
-    registry:
-      plugin: kubedns
-      namespace: yourproject
-      cluster_domain: cluster.local
-
-# The configuration to setup the operator, this wont get uploaded.
 octoctl:
-  # The kubernetes operator will run itself inside kubernetes and communicate via RPC with that "operator".
-  # It will upload the merged config to a kubernetes secret, the operator then executes it.
-  plugin: kubernetes 
-  namespace: yourproject
-  # Prefix for each resource item.
-  prefix: instance1
-  api: https://rancher.example.com/k8s/clusters/local
-  token: <token>
-
   repos:
     mycustom:
       url: https://raw.githubusercontent.com/jochumdev/yourproject-plugins/refs/heads/main/repo.yaml
@@ -215,7 +187,6 @@ octoctl:
 configs:
   nats:
     port: 4222
-    cluster: true
 
   my-supi:
     name: Alex
