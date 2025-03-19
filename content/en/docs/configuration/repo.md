@@ -24,13 +24,13 @@ operator:
         arch: amd64
         url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64
         sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64.sha256
-        cmd: operator-baremetal
+        binary: operator-baremetal
     source:
       url: https://github.com/octocompose/operator-baremetal.git
-      branch: v0.0.1
+      ref: refs/tags/v0.0.1
       buildCmds:
         - GOOS={{OS}} GOARCH={{ARCH}} make
-      cmd: dist/{{OS}}/{{ARCH}}/operator-baremetal
+      binary: dist/{{OS}}/{{ARCH}}/operator-baremetal
 ```
 
 ### For Tools
@@ -45,13 +45,13 @@ tool:
           url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64
           sha256Url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64.sha256
           # Binary inside the archive.
-          cmd: check-tcp
+          binary: check-tcp
       source:
         repo: https://github.com/octocompose/tools.git
-        branch: v0.0.1
+        ref: refs/tags/v0.0.1
         buildCmds:
           - GOOS={{OS}} GOARCH={{ARCH}} make check-tcp
-        cmd: dist/{{OS}}/{{ARCH}}/check-tcp
+        binary: dist/{{OS}}/{{ARCH}}/check-tcp
     docker:
       registry: docker.io
       image: octocompose/tools
@@ -59,7 +59,7 @@ tool:
       entrypoint: /usr/local/bin/check-tcp
       build:
         repo: https://github.com/octocompose/tools.git
-        branch: v0.0.1
+        ref: refs/tags/v0.0.1
         dockerfile: Dockerfile
         context: .
 ```
@@ -85,20 +85,20 @@ service:
           url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64
           sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64.sha256
           # Binary inside the archive.
-          cmd: yourproject-nats
+          binary: yourproject-nats
       source:
         repo: https://github.com/yourproject/yourproject.git
-        branch: v2.0.0
+        ref: refs/tags/v2.0.0
         buildCmds:
           - GOOS={{OS}} GOARCH={{ARCH}} make yourproject-nats
-        cmd: dist/{{OS}}/{{ARCH}}/yourproject-nats
+        binary: dist/{{OS}}/{{ARCH}}/yourproject-nats
     docker:
       registry: docker.io
       image: yourproject/yourproject-nats
       tag: v2.0.0
       build:
         repo: https://github.com/yourproject/yourproject.git
-        branch: v2.0.0
+        ref: refs/tags/v2.0.0
         dockerfile: services/nats/Dockerfile
         context: services/nats
 ```

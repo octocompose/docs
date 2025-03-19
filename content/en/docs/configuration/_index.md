@@ -18,7 +18,7 @@ The configuration system allows:
 - Layering configurations (core settings with environment-specific overrides)
 - Templating for dynamic configurations
 - Version tracking for configuration sources
-- Validation through preflight checks
+- Validation through validate checks
 
 This approach eliminates duplicate settings and separates core settings from customizations, making it easier to manage complex deployments.
 
@@ -82,16 +82,17 @@ configs:
     port: 9233
 
 octoctl:
-  operator: baremetal # One of `baremetal`, `docker`, `kubernetes` or you provide your own.
+  operator: baremetal # One of `baremetal`, `docker-compose`, `kubernetes` or you provide your own.
   repos:
     core:
-      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/core.yaml
+      url: ../repo/core.yaml
       # Will be auto-detected by adding '.asc' to the url.
       # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/core.yaml.asc
 
 services:
   nats:
-    noTemplate: true
+    config:
+      noTemplate: true
     health:
       - tool: check-tcp # will check if a connection to that port is possible.
         args: 
@@ -99,19 +100,23 @@ services:
         enabled: true # Setting it to "false" will disable this health check.
         successThreshold: 1
         failureThreshold: 3
-    preflight:
-      - tool: check-open-port  # will check for an open port, it will only run with specified operators, e.g. `baremetal`.
+    validate:
+      - tool: check-open-tcp-port  # will check for an open tcp port
+        operators: [baremetal]
         args:
           - {{configs.nats.port}}
   idp:
-    globals: yourproject
+    config:
+      globals: yourproject
   auth-service:
-    globals: yourproject
+    config:
+      globals: yourproject
     depends:
       - service: idp
       - service: nats
   webdav: 
-    globals: yourproject
+    config:
+      globals: yourproject
     depends:
       - health: auth-service
     health:
@@ -129,9 +134,9 @@ services:
           - "--plaintext"
         successThreshold: 1
         failureThreshold: 3
-    preflight:
+    validate:
       - tool: run # tool `run` will run the service trough the operator with the given arguments.
-        args: ["preflight"]
+        args: ["validate"]
     init:
       - tool: run
         args: ["migrate"]
@@ -146,7 +151,7 @@ And here is an extensions for `collabora`:
 octoctl:
   repos:
     collabora:
-      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/collabora.yaml
+      url: ../repo/collabora.yaml
       # Will be auto-detected by adding '.asc' to the url.
       # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/collabora.yaml.asc
   
@@ -179,6 +184,7 @@ include:
       # url: https://api.github.com/repos/yourproject/octocompose-chart/releases/latest
 
 octoctl:
+  workspace: workspace
   repos:
     mycustom:
       url: https://raw.githubusercontent.com/jochumdev/yourproject-plugins/refs/heads/main/repo.yaml

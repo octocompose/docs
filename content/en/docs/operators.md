@@ -28,12 +28,11 @@ The baremetal operator manages services directly on the host system.
 ```yaml
 octoctl:
   operator: baremetal
-  project: myproject
 ```
 
-### Docker Operator
+### Docker Compose Operator
 
-The Docker operator manages services as Docker containers.
+The Docker Compose operator manages services as Docker Compose containers.
 
 **Features:**
 - Pulls and runs Docker images
@@ -46,8 +45,7 @@ The Docker operator manages services as Docker containers.
 **Configuration Example:**
 ```yaml
 octoctl:
-  operator: docker
-  project: myproject
+  operator: docker-compose
   network: yourproject-instance1
   volume_path: /var/OctoCompose/volumes
 ```
@@ -93,7 +91,7 @@ The operator is selected in the OctoCompose configuration:
 
 ```yaml
 octoctl:
-  operator: baremetal  # One of: baremetal, docker, kubernetes
+  operator: baremetal
 ```
 
 OctoCompose will use the specified operator for executing all commands and managing services.
