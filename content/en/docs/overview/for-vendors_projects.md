@@ -4,11 +4,11 @@ linkTitle: Overview for Vendors/Projects
 weight: 3
 ---
 
-# Empower Your Software Distribution with OctoCompose
+> Empower Your Software Distribution with OctoCompose
 
 For software vendors and project maintainers, OctoCompose provides sophisticated solutions that enhance your distribution strategy and improve end-user experience.
 
-## Strategic Configuration Management
+### Strategic Configuration Management
 
 OctoCompose enables you to:
 
@@ -18,7 +18,7 @@ OctoCompose enables you to:
 
 - **Leverage Advanced Configuration Capabilities**: Utilize powerful features including configuration inheritance through `includes`, global variable definitions with `globals`, dynamic content generation via `templating`, and intelligent configuration `merging`.
 
-## Sophisticated Update Management
+### Sophisticated Update Management
 
 OctoCompose's intelligent update system addresses the challenges of version control and migrations:
 
@@ -28,7 +28,7 @@ OctoCompose's intelligent update system addresses the challenges of version cont
 
 - **Simplified User Experience**: Your users benefit from complex upgrade sequences condensed into a single command, streamlining their maintenance procedures while preserving reliability.
 
-## Enterprise-Ready Architecture
+### Enterprise-Ready Architecture
 
 The system's design principles support professional software distribution requirements:
 
