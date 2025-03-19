@@ -42,38 +42,39 @@ Here is an example config which you might host at:
 ```yaml
 # Globals are applied to each service, individual services can overwrite them.
 globals:
-  client:
-    preferredTransports: 
-      - orbdrpc # orb uses it's own wire Format for results on top of DRPC to deliver responses with metadata.
-      - grpc
-  server:
-    orbdrpc:
-      # Templating happens at the service level.
-      listenNetwork: unix
-      listenAddress: "{{env.XDG_RUNTIME_DIR}}/{{octoctl.Name}}/{{octoctl.ID}}/{{octoctl.service.Name}}-drpc.sock"
-    grpc:
-      listenNetwork: unix
-      listenAddress: "{{env.XDG_RUNTIME_DIR}}/{{octoctl.Name}}/{{octoctl.ID}}/{{octoctl.service.Name}}-grpc.sock"
-  kvstore:
-    # kvstore/natsjs is fully compatible with these settings 
-    # to go-micro/store/natsjs which is used in opencloud.
-    plugin: natsjs
-    servers:
-      - nats://localhost:9233
-    bucketPerTable: false
-    jsonKeyValues: true
-    compress: false
-  registry:
-    # registry/micro-kvstore is a opencloud/nats-js-kv compatible registry.
-    plugin: micro-kvstore
-    defaultTransport: grpc
+  youproject:
+    client:
+      preferredTransports: 
+        - orbdrpc # orb uses it's own wire Format for results on top of DRPC to deliver responses with metadata.
+        - grpc
+    server:
+      orbdrpc:
+        # Templating happens at the service level.
+        network: unix
+        listen: "{{env.XDG_RUNTIME_DIR}}/{{octoctl.projectID}}/{{service.Name}}-drpc.sock"
+      grpc:
+        network: unix
+        listen: "{{env.XDG_RUNTIME_DIR}}/{{octoctl.projectID}}/{{service.Name}}-grpc.sock"
     kvstore:
+      # kvstore/natsjs is fully compatible with these settings 
+      # to go-micro/store/natsjs which is used in opencloud.
       plugin: natsjs
+      servers:
+        - nats://localhost:9233
       bucketPerTable: false
       jsonKeyValues: true
       compress: false
-      servers:
-        - nats://localhost:9233
+    registry:
+      # registry/micro-kvstore is a opencloud/nats-js-kv compatible registry.
+      plugin: micro-kvstore
+      defaultTransport: grpc
+      kvstore:
+        plugin: natsjs
+        bucketPerTable: false
+        jsonKeyValues: true
+        compress: false
+        servers:
+          - nats://localhost:9233
 
 # Service configurations:
 configs:
@@ -84,65 +85,57 @@ octoctl:
   operator: baremetal # One of `baremetal`, `docker`, `kubernetes` or you provide your own.
   repos:
     core:
-      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/core.yaml
+      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/core.yaml
       # Will be auto-detected by adding '.asc' to the url.
-      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/core.yaml.asc
+      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/core.yaml.asc
 
 services:
   nats:
-    config:
-      globals: false # The default
-      template: false # The default
+    noTemplate: true
     health:
       - tool: check-tcp # will check if a connection to that port is possible.
-        toolArgs:
-          port: {{configs.nats.port}} # This is the 9233 defined below or 4222 in the example users config.
+        args: 
+          - {{configs.nats.port}} # This is the 9233 defined below or 4222 in the example users config.
         enabled: true # Setting it to "false" will disable this health check.
         successThreshold: 1
         failureThreshold: 3
     preflight:
-      - tool: check-tcp-port  # will check for an open port, it will only run with specified operators, e.g. `baremetal`.
-        toolArgs:
-          port: {{configs.nats.port}}
+      - tool: check-open-port  # will check for an open port, it will only run with specified operators, e.g. `baremetal`.
+        args:
+          - {{configs.nats.port}}
   idp:
-    config:
-      globals: true
-      template: true
+    globals: yourproject
   auth-service:
-    config:
-      globals: true
-      template: true
+    globals: yourproject
     depends:
       - service: idp
       - service: nats
   webdav: 
-    config:
-      globals: true
-      template: true
+    globals: yourproject
     depends:
       - health: auth-service
     health:
       - tool: check-grpc
-        toolArgs:
-          network: {{configs.webdav.server.grpc.listenNetwork}}
-          address: {{configs.webdav.server.grpc.listenAddress}}
+        args:
+          - "--network"
+          - {{configs.webdav.server.grpc.network}}
+          - "--listen"
+          - {{configs.webdav.server.grpc.listen}}
           # You can leave the endpoint for the default grpc Health check empty.
           # https://grpc.io/docs/guides/health-checking/
           # https://github.com/grpc/grpc-proto/blob/master/grpc/health/v1/health.proto
-          endpoint: /grpc.health.v1.Health/Check
-          plaintext: true
+          - "--endpoint"
+          - /grpc.health.v1.Health/Check
+          - "--plaintext"
         successThreshold: 1
         failureThreshold: 3
     preflight:
-      - tool: run # tool `run will run the service trough the operator with the given arguments.
-        toolArgs:
-          args: ["preflight"]
+      - tool: run # tool `run` will run the service trough the operator with the given arguments.
+        args: ["preflight"]
     init:
       - tool: run
-        toolArgs:
-          args: ["migrate"]
-    main:
-      args: ["server"]
+        args: ["migrate"]
+    args: ["server"]
 ```
 
 ### Extensions config example
@@ -153,9 +146,9 @@ And here is an extensions for `collabora`:
 octoctl:
   repos:
     collabora:
-      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml
+      url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/collabora.yaml
       # Will be auto-detected by adding '.asc' to the url.
-      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/collabora.yaml.asc
+      # gpg: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repo/collabora.yaml.asc
   
 services:
   collabora: {}
@@ -166,10 +159,8 @@ services:
 Here is an example user-provided `config.yaml`:
 
 ```yaml
-project:
-  name: yourproject
-  # This will be generated by the octoctl if none is provided, it will be a shortUUID.
-  id: 1234567890
+# This will be generated by the octoctl if none is provided, it will be a shortUUID.
+projectID: 1234567890
 
 include:
   - url: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/config/core.yaml
@@ -189,20 +180,21 @@ include:
 
 # Globals are applied to each service.
 globals:
-  server:
-    orbdrpc:
-      listenNetwork: tcp
-      listenAddress: 0.0.0.0:8081
-    grpc:
-      listenNetwork: tcp
-      listenAddress: 0.0.0.0:8080
-  kvstore:
-    servers:
-      - nats://nats:4222
-  registry:
-    plugin: kubedns
-    namespace: yourproject
-    cluster_domain: cluster.local
+  yourproject:
+    server:
+      orbdrpc:
+        listenNetwork: tcp
+        listenAddress: 0.0.0.0:8081
+      grpc:
+        listenNetwork: tcp
+        listenAddress: 0.0.0.0:8080
+    kvstore:
+      servers:
+        - nats://nats:4222
+    registry:
+      plugin: kubedns
+      namespace: yourproject
+      cluster_domain: cluster.local
 
 # The configuration to setup the operator, this wont get uploaded.
 octoctl:
@@ -247,11 +239,10 @@ services:
 OctoCompose supports templating in configuration files using Go's text/template syntax. This allows for dynamic configuration based on:
 
 - Environment variables (`{{env.XDG_RUNTIME_DIR}}`)
-- Project information (`{{octoctl.Name}}`, `{{octoctl.ID}}`)
-- Service-specific values (`{{service.App.Name}}`)
+- Project information (`{{octoctl.projectID}}`)
+- Service-specific values (`{{service.Name}}`)
 
-Templates are processed when the `?template=true` parameter is added to included configuration URLs.
-Except for repos you will not need to add the `?template=true` parameter, services get always a templated config, except they have the `operator.services.<service>.config.noTemplate` flag set.
+Services get always a templated config, except they have the `services.<service>.config.noTemplate` flag set.
 
 ## Version Tracking
 
