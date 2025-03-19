@@ -58,7 +58,7 @@ operator:
     core:
       url: https://github.com/octocompose/tools/releases/download/v0.0.1/repos/core.yaml
     custom:
-      url: https://github.com/yourproject/tools/releases/download/v2.0.0/repos/custom.yaml
+      url: https://github.com/demoproject/tools/releases/download/v2.0.0/repos/custom.yaml
 ```
 
 ### Tool Execution Flow

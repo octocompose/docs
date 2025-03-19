@@ -69,8 +69,8 @@ tool:
 ```yaml
 # We allow includes in repos.
 include:
-    # This example might have some tools which yourproject v2.0.0 needs.
-    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/yourproject/octocompose-chart/refs/tags/v2.0.0/repos/
+    # This example might have some tools which demoproject v2.0.0 needs.
+    # Full URL will be generated from the parent path: https://raw.githubusercontent.com/demoproject/octocompose-chart/refs/tags/v2.0.0/repos/
     # This allows to use the same repo for Development and Production (file:// vs. https://)
   - url: ./service/webdav.yaml
     gpg: ./service/webdav.yaml.asc
@@ -82,22 +82,22 @@ service:
       binary:
         - os: linux
           arch: amd64
-          url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64
-          sha256Url: https://github.com/yourproject/yourproject/releases/download/v2.0.0/yourproject-nats-2.0.0-linux-amd64.sha256
+          url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64
+          sha256Url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64.sha256
           # Binary inside the archive.
-          binary: yourproject-nats
+          binary: demoproject-nats
       source:
-        repo: https://github.com/yourproject/yourproject.git
+        repo: https://github.com/demoproject/demoproject.git
         ref: refs/tags/v2.0.0
         buildCmds:
-          - GOOS={{OS}} GOARCH={{ARCH}} make yourproject-nats
-        binary: dist/{{OS}}/{{ARCH}}/yourproject-nats
+          - GOOS={{OS}} GOARCH={{ARCH}} make demoproject-nats
+        binary: dist/{{OS}}/{{ARCH}}/demoproject-nats
     docker:
       registry: docker.io
-      image: yourproject/yourproject-nats
+      image: demoproject/demoproject-nats
       tag: v2.0.0
       build:
-        repo: https://github.com/yourproject/yourproject.git
+        repo: https://github.com/demoproject/demoproject.git
         ref: refs/tags/v2.0.0
         dockerfile: services/nats/Dockerfile
         context: services/nats

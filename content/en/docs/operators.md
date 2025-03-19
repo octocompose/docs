@@ -46,7 +46,7 @@ The Docker Compose operator manages services as Docker Compose containers.
 ```yaml
 octoctl:
   operator: docker-compose
-  network: yourproject-instance1
+  network: demoproject-instance1
   volume_path: /var/OctoCompose/volumes
 ```
 
@@ -67,7 +67,7 @@ The Kubernetes operator deploys and manages services in Kubernetes clusters.
 octoctl:
   operator: kubernetes
   name: instance1
-  namespace: yourproject
+  namespace: demoproject
   api: https://rancher.example.com/k8s/clusters/local
   token: <token>
 ```
