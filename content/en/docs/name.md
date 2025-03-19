@@ -6,30 +6,34 @@ description: >
   About the Name and Logo
 ---
 
-`OctoCompose` is a combination/mixture of `Octopus` and `docker-compose`.
+## Project Name Origin
 
-### Complications while finding a name
+The name `OctoCompose` is a deliberate fusion of "Octopus" and "Compose," reflecting both the multi-service orchestration capabilities (like an octopus's many arms) and the compositional nature of the configuration system.
 
-I found it very hard to find a good name for this tool, while writing this concept doc I changed the name multiple times.
+### Name Selection Process
 
-There are either no free Domain Names, no Github or other clashes.
+Finding an appropriate name for this project was challenging. We explored several alternatives including `octctl`, `orbctl`, and `orberator` before settling on `OctoCompose`. The selection process involved ensuring:
 
-I'm still not sure this is the right name. Previous names have been `octctl`, `orbctl` and `orberator`.
+- Domain name availability
+- No namespace conflicts on GitHub and other platforms
+- Alignment with the project's core functionality
 
-## Logo
+## Logo Evolution
 
-I bought that Logo from [FreeLogoDesign](https://www.freelogodesign.org/), it's a Octopus with boxes. 
+### Current Logo
 
-### FreeLogoDesign one
+Our current logo was sourced from [FreeLogoDesign](https://www.freelogodesign.org/) and features an octopus with containers, symbolizing the project's purpose:
 
-![FreeLogoDesign](/icons/logo.svg)
+![OctoCompose Logo](/icons/logo.svg)
 
-### Similarity to Docker Compose
+### Design Considerations
 
-Sadly it looks like Docker Compose I found after:
+We later noticed a visual similarity with Docker Compose's logo:
 
-![docker-compose](https://superset.apache.org/img/docker-compose.webp)
+![Docker Compose Logo](https://superset.apache.org/img/docker-compose.webp)
 
-### Help wanted
+While this similarity was unintentional, it highlights our shared focus on service composition and orchestration.
 
-I'm still not satisfied with the logo, so if you have a better idea or want to help me find a better one, please let me know.
+### Logo Roadmap
+
+We're open to evolving our visual identity as the project matures. If you have design expertise or suggestions for improving our logo while maintaining the core octopus/composition theme, we welcome your contributions.
