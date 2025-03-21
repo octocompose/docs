@@ -222,9 +222,14 @@ services:
 
 OctoCompose supports templating in configuration files using Go's text/template syntax. This allows for dynamic configuration based on:
 
-- Environment variables (`{{.env.XDG_RUNTIME_DIR}}`)
-- Project information (`{{.octoctl.projectID}}`)
-- Service-specific values (`{{.service.Name}}`)
+- `{{.projectID}}` is the project ID.
+- `{{.OS}}` is the target OS (e.g. linux, windows, darwin)
+- `{{.ARCH}}` is the target architecture (e.g. amd64, arm64)
+- `{{.env.*}}` are the environment variables.
+- `{{.repos.*}}` are the repository variables.
+- `{{.configs.<service>.*}}` are the compiled (with globals) configs for a service.
+- `{{.services.<service>.*}}` are the services.
+- `{{.octoctl}}` is the octoctl configuration.
 
 Service configs get always a templated, except they have the `services.<service>.config.noTemplate` flag set.
 

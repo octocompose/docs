@@ -20,8 +20,7 @@ Repos will always be templated.
 operator:
   baremetal:
     binary:
-      - os: linux
-        arch: amd64
+      linux_amd64:
         url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64
         sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64.sha256
         binary: operator-baremetal
@@ -40,8 +39,7 @@ tool:
   check-tcp:
     baremetal:
       binary:
-        - os: linux
-          arch: amd64
+        linux_amd64:
           url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64
           sha256Url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64.sha256
           # Binary inside the archive.
@@ -80,8 +78,7 @@ service:
   nats:
     baremetal:
       binary:
-        - os: linux
-          arch: amd64
+        linux_amd64:
           url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64
           sha256Url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64.sha256
           # Binary inside the archive.
@@ -102,3 +99,34 @@ service:
         dockerfile: services/nats/Dockerfile
         context: services/nats
 ```
+
+# For Random files
+
+```yaml
+  files:
+    opencloud_app_registry:
+      url: ../../files/opencloud/app-registry.yaml
+      # Template true will run text/template on it.
+      template: false
+    opencloud_csp:
+      url: ../../files/opencloud/csp.yaml
+      # Template true will run text/template on it.
+      template: false
+    banned_password_list:
+      url: ../../files/opencloud/banned-password-list.txt
+      # Template true will run text/template on it.
+      template: false
+```
+
+## Notes
+
+Template variables:
+
+- `{{.projectID}}` is the project ID.
+- `{{.OS}}` is the target OS (e.g. linux, windows, darwin)
+- `{{.ARCH}}` is the target architecture (e.g. amd64, arm64)
+- `{{.env.*}}` are the environment variables.
+- `{{.repos.*}}` are the repository variables.
+- `{{.configs.<service>.*}}` are the compiled (with globals) configs for a service.
+- `{{.services.<service>.*}}` are the services.
+- `{{.octoctl}}` is the octoctl configuration.
