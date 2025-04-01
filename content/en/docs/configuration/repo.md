@@ -9,8 +9,13 @@ Repos will always be templated.
 
 ## Template Variables
 
-- `{{OS}}`: The target OS
-- `{{ARCH}}`: The target architecture
+- `{{.projectID}}` is the project ID.
+- `{{.OS}}` is the target OS (e.g. linux, windows, darwin)
+- `{{.ARCH}}` is the target architecture (e.g. amd64, arm64)
+- `{{.env.*}}` are the environment variables.
+- `{{.configs.<service>.*}}` are the compiled (with globals) configs for a service.
+- `{{.services.<service>.*}}` are the services.
+- `{{.octoctl}}` is the octoctl configuration.
 
 ## Syntax
 
@@ -23,13 +28,16 @@ operator:
       linux_amd64:
         url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64
         sha256Url: https://github.com/octocompose/operator-baremetal/releases/download/v0.0.1/operator-baremetal-linux-amd64.sha256
+        # Binary inside the archive, leave out if not an archive.
         binary: operator-baremetal
     source:
-      url: https://github.com/octocompose/operator-baremetal.git
+      # If path is set and existing, repo and ref are ignored.
+      path: ../
+      repo: https://github.com/octocompose/operator-baremetal.git
       ref: refs/tags/v0.0.1
       buildCmds:
-        - GOOS={{OS}} GOARCH={{ARCH}} make
-      binary: dist/{{OS}}/{{ARCH}}/operator-baremetal
+        - GOOS={{.OS}} GOARCH={{.ARCH}} make
+      binary: dist/{{.OS}}/{{.ARCH}}/operator-baremetal
 ```
 
 ### For Tools
@@ -42,14 +50,16 @@ tool:
         linux_amd64:
           url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64
           sha256Url: https://github.com/octocompose/tools/releases/download/v0.0.1/tools-linux-amd64.sha256
-          # Binary inside the archive.
+          # Binary inside the archive, leave out if not an archive.
           binary: check-tcp
       source:
+        # If path is set and existing, repo and ref are ignored.
+        path: ../
         repo: https://github.com/octocompose/tools.git
         ref: refs/tags/v0.0.1
         buildCmds:
-          - GOOS={{OS}} GOARCH={{ARCH}} make check-tcp
-        binary: dist/{{OS}}/{{ARCH}}/check-tcp
+          - GOOS={{.OS}} GOARCH={{.ARCH}} make check-tcp
+        binary: dist/{{.OS}}/{{.ARCH}}/check-tcp
     docker:
       registry: docker.io
       image: octocompose/tools
@@ -81,9 +91,11 @@ service:
         linux_amd64:
           url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64
           sha256Url: https://github.com/demoproject/demoproject/releases/download/v2.0.0/demoproject-nats-2.0.0-linux-amd64.sha256
-          # Binary inside the archive.
+          # Binary inside the archive, leave out if not an archive.
           binary: demoproject-nats
       source:
+        # If path is set and existing, repo and ref are ignored.
+        path: ../
         repo: https://github.com/demoproject/demoproject.git
         ref: refs/tags/v2.0.0
         buildCmds:
@@ -117,16 +129,3 @@ service:
       # Template true will run text/template on it.
       template: false
 ```
-
-## Notes
-
-Template variables:
-
-- `{{.projectID}}` is the project ID.
-- `{{.OS}}` is the target OS (e.g. linux, windows, darwin)
-- `{{.ARCH}}` is the target architecture (e.g. amd64, arm64)
-- `{{.env.*}}` are the environment variables.
-- `{{.repos.*}}` are the repository variables.
-- `{{.configs.<service>.*}}` are the compiled (with globals) configs for a service.
-- `{{.services.<service>.*}}` are the services.
-- `{{.octoctl}}` is the octoctl configuration.
